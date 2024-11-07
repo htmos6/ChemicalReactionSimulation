@@ -132,7 +132,9 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ChemicalReaction.h" />
+    <ClInclude Include="ChemicalReaction_Mutex.h" />
+    <ClInclude Include="ChemicalReaction_Semaphore.h" />
+    <ClInclude Include="CommonTypes.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

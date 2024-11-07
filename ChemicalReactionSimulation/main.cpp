@@ -2,11 +2,12 @@
 //
 
 #include <iostream>
-#include "ChemicalReaction.h"
+#include "ChemicalReaction_Semaphore.h"
+#include "ChemicalReaction_Mutex.h"
 
 int main()
 {
-    ChemicalReaction s(20,20,20,20,20,100);
+    ChemicalReaction_Semaphore s;
     s.Start();
     
 }
