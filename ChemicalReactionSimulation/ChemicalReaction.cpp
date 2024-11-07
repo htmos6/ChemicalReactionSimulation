@@ -1,14 +1,14 @@
 ﻿#include "ChemicalReaction.h"
 
-ChemicalReaction::ChemicalReaction(int C, int N, int S, int Th, int O, int genRate) 
+ChemicalReaction::ChemicalReaction(int C, int N, int S, int Th, int O, int generationRate) 
 {
-    this->genRate = genRate;
-    totalAtomNum = C + N + S + Th + O;
-    targetAtomNum[0] = C;
-    targetAtomNum[1] = N;
-    targetAtomNum[2] = S;
-    targetAtomNum[3] = Th;
-    targetAtomNum[4] = O;
+    this->generationRate = generationRate;
+    totalAtomNumber = C + N + S + Th + O;
+    targetAtomNumbers[0] = C;
+    targetAtomNumbers[1] = N;
+    targetAtomNumbers[2] = S;
+    targetAtomNumbers[3] = Th;
+    targetAtomNumbers[4] = O;
 }
 
 void ChemicalReaction::Start() 
@@ -20,21 +20,24 @@ void ChemicalReaction::Start()
 
     std::unique_lock<std::recursive_mutex> lck(mtx, std::defer_lock);
 
-    for (int i = 0; i < totalAtomNum; i++) 
+    for (int i = 0; i < totalAtomNumber; i++) 
     {
         int randAtomType = std::rand() % TOTAL_NUMBER_OF_ATOM_TYPE;
 
-        while (targetAtomNum[randAtomType] == 0) 
+        while (targetAtomNumbers[randAtomType] == 0) 
         {
             randAtomType = std::rand() % TOTAL_NUMBER_OF_ATOM_TYPE;
         }
 
-        targetAtomNum[randAtomType] -= 1;
-
+        atom ax;
         lck.lock();
-        initAtomNum[randAtomType] += 1;
-        std::cout << atomName[randAtomType] << " with ID: " << atomID++ << " is created." << std::endl;
+        ax.atomID = atomID++;
+        ax.atomType = atomName[randAtomType];
+        currentAtomNumbers[randAtomType] += 1;
         lck.unlock();
+
+        targetAtomNumbers[randAtomType] -= 1;
+        std::cout << ax.atomType << " with ID: " << ax.atomID << " is created." << std::endl;
         cv.notify_all();
 
         Sleep();
@@ -57,18 +60,18 @@ void ChemicalReaction::Compose_CO2()
     while (true) 
     {
         std::unique_lock<std::recursive_mutex> lck(mtx);
-        while ((controller != 1 && controller != 3) || initAtomNum[0] < 1 || initAtomNum[4] < 2)
+        while ((orderOfGeneration != 1 && orderOfGeneration != 3) || currentAtomNumbers[0] < 1 || currentAtomNumbers[4] < 2)
         {
             cv.wait(lck);
         }
 
-        initAtomNum[0] -= 1;
-        initAtomNum[4] -= 2;
+        currentAtomNumbers[0] -= 1;
+        currentAtomNumbers[4] -= 2;
         composedMolecule = "CO2";
         DisplayComposedMolecule();
 
         // Move to the next molecule in the sequence
-        controller = (controller == 1) ? 2 : 4;
+        orderOfGeneration = (orderOfGeneration == 1) ? 2 : 4;
     }
 }
 
@@ -77,18 +80,18 @@ void ChemicalReaction::Compose_NO2()
     while (true) 
     {
         std::unique_lock<std::recursive_mutex> lck(mtx);
-        while (controller != 2 || initAtomNum[1] < 1 || initAtomNum[4] < 2) 
+        while (orderOfGeneration != 2 || currentAtomNumbers[1] < 1 || currentAtomNumbers[4] < 2) 
         {
             cv.wait(lck);
         }
 
-        initAtomNum[1] -= 1;
-        initAtomNum[4] -= 2;
+        currentAtomNumbers[1] -= 1;
+        currentAtomNumbers[4] -= 2;
         composedMolecule = "NO2";
         DisplayComposedMolecule();
 
         // Move to the next molecule in the sequence
-        controller = 3;
+        orderOfGeneration = 3;
     }
 }
 
@@ -97,18 +100,18 @@ void ChemicalReaction::Compose_SO2()
     while (true) 
     {
         std::unique_lock<std::recursive_mutex> lck(mtx);
-        while (controller != 4 || initAtomNum[2] < 1 || initAtomNum[4] < 2) 
+        while (orderOfGeneration != 4 || currentAtomNumbers[2] < 1 || currentAtomNumbers[4] < 2) 
         {
             cv.wait(lck);
         }
 
-        initAtomNum[2] -= 1;
-        initAtomNum[4] -= 2;
+        currentAtomNumbers[2] -= 1;
+        currentAtomNumbers[4] -= 2;
         composedMolecule = "SO2";
         DisplayComposedMolecule();
 
         // Move to the next molecule in the sequence
-        controller = 5;
+        orderOfGeneration = 5;
     }
 }
 
@@ -117,18 +120,18 @@ void ChemicalReaction::Compose_THO2()
     while (true) 
     {
         std::unique_lock<std::recursive_mutex> lck(mtx);
-        while (controller != 5 || initAtomNum[3] < 1 || initAtomNum[4] < 2) 
+        while (orderOfGeneration != 5 || currentAtomNumbers[3] < 1 || currentAtomNumbers[4] < 2) 
         {
             cv.wait(lck);
         }
 
-        initAtomNum[3] -= 1;
-        initAtomNum[4] -= 2;
+        currentAtomNumbers[3] -= 1;
+        currentAtomNumbers[4] -= 2;
         composedMolecule = "ThO2";
         DisplayComposedMolecule();
 
         // Reset to the start of the cycle
-        controller = 1;
+        orderOfGeneration = 1;
     }
 }
 
