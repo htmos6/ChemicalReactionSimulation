@@ -1,5 +1,4 @@
-﻿#ifndef INCLUDE_ATOM_H_
-#define INCLUDE_ATOM_H_
+﻿#pragma once 
 
 #include <iostream>
 #include <cstdlib>
@@ -14,11 +13,11 @@
 
 #define TOTAL_NUMBER_OF_ATOM_TYPE 5
 
-class ChemicalReaction
+class ChemicalReaction_Mutex
 {
 public:
-	ChemicalReaction(int C, int N, int S, int Th, int O, int generationRate);
-	~ChemicalReaction();
+	ChemicalReaction_Mutex(int C, int N, int S, int Th, int O, int generationRate);
+	~ChemicalReaction_Mutex();
 	void Start();
 
 private:
@@ -48,5 +47,3 @@ private:
 	void DisplayComposedMolecule(TYPE producedType);
 
 };
-
-#endif

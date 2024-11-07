@@ -7,7 +7,7 @@
 
 int main()
 {
-    ChemicalReaction_Semaphore s;
+    ChemicalReaction_Mutex s(20,20,20,20,20,100);
     s.Start();
     
 }

@@ -128,7 +128,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ChemicalReaction.cpp" />
+    <ClCompile Include="ChemicalReaction_Mutex.cpp" />
+    <ClCompile Include="ChemicalReaction_Semaphore.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>

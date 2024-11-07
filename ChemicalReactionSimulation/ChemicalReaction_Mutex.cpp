@@ -1,6 +1,6 @@
-﻿#include "ChemicalReaction.h"
+﻿#include "ChemicalReaction_Mutex.h"
 
-ChemicalReaction::ChemicalReaction(int C, int N, int S, int Th, int O, int generationRate) 
+ChemicalReaction_Mutex::ChemicalReaction_Mutex(int C, int N, int S, int Th, int O, int generationRate)
 {
     this->generationRate = generationRate;
     totalAtomNumber = C + N + S + Th + O;
@@ -11,7 +11,7 @@ ChemicalReaction::ChemicalReaction(int C, int N, int S, int Th, int O, int gener
     targetAtomNumbers[4] = O;
 }
 
-ChemicalReaction::~ChemicalReaction()
+ChemicalReaction_Mutex::~ChemicalReaction_Mutex()
 {
     std::unique_lock<std::recursive_mutex> lck(mtx);
 
@@ -47,19 +47,19 @@ ChemicalReaction::~ChemicalReaction()
     }
 }
 
-void ChemicalReaction::Start() 
+void ChemicalReaction_Mutex::Start()
 {
-    std::thread co2_comp(&ChemicalReaction::Compose_CO2, this);
-    std::thread no2_comp(&ChemicalReaction::Compose_NO2, this);
-    std::thread so2_comp(&ChemicalReaction::Compose_SO2, this);
-    std::thread tho2_comp(&ChemicalReaction::Compose_THO2, this);
+    std::thread co2_comp(&ChemicalReaction_Mutex::Compose_CO2, this);
+    std::thread no2_comp(&ChemicalReaction_Mutex::Compose_NO2, this);
+    std::thread so2_comp(&ChemicalReaction_Mutex::Compose_SO2, this);
+    std::thread tho2_comp(&ChemicalReaction_Mutex::Compose_THO2, this);
 
     std::unique_lock<std::recursive_mutex> lck(mtx, std::defer_lock);
-    for (int i = 0; i < totalAtomNumber; i++) 
+    for (int i = 0; i < totalAtomNumber; i++)
     {
         int randAtomType = std::rand() % TOTAL_NUMBER_OF_ATOM_TYPE;
 
-        while (targetAtomNumbers[randAtomType] == 0) 
+        while (targetAtomNumbers[randAtomType] == 0)
         {
             randAtomType = std::rand() % TOTAL_NUMBER_OF_ATOM_TYPE;
         }
@@ -105,14 +105,14 @@ void ChemicalReaction::Start()
 }
 
 /*
-void ChemicalReaction::Sleep() 
+void ChemicalReaction_Mutex::Sleep()
 {
     double sTime = (-1.0 / 100.0) * log(1.0 - ((double)std::rand() / RAND_MAX));
     std::this_thread::sleep_for(std::chrono::microseconds(static_cast<int>(sTime * 1000000)));
 }
 */
 
-void ChemicalReaction::Sleep(int defaultTime)
+void ChemicalReaction_Mutex::Sleep(int defaultTime)
 {
     if (defaultTime < 0)
     {
@@ -125,9 +125,9 @@ void ChemicalReaction::Sleep(int defaultTime)
     }
 }
 
-void ChemicalReaction::Compose_CO2() 
+void ChemicalReaction_Mutex::Compose_CO2()
 {
-    while (true) 
+    while (true)
     {
         std::unique_lock<std::recursive_mutex> lck(mtx);
         while ((orderOfGeneration != 1 && orderOfGeneration != 3) || c_atoms.size() < 1 || o_atoms.size() < 2)
@@ -146,9 +146,9 @@ void ChemicalReaction::Compose_CO2()
     }
 }
 
-void ChemicalReaction::Compose_NO2() 
+void ChemicalReaction_Mutex::Compose_NO2()
 {
-    while (true) 
+    while (true)
     {
         std::unique_lock<std::recursive_mutex> lck(mtx);
         while (orderOfGeneration != 2 || n_atoms.size() < 1 || o_atoms.size() < 2)
@@ -167,9 +167,9 @@ void ChemicalReaction::Compose_NO2()
     }
 }
 
-void ChemicalReaction::Compose_SO2() 
+void ChemicalReaction_Mutex::Compose_SO2()
 {
-    while (true) 
+    while (true)
     {
         std::unique_lock<std::recursive_mutex> lck(mtx);
         while (orderOfGeneration != 4 || s_atoms.size() < 1 || o_atoms.size() < 2)
@@ -188,9 +188,9 @@ void ChemicalReaction::Compose_SO2()
     }
 }
 
-void ChemicalReaction::Compose_THO2() 
+void ChemicalReaction_Mutex::Compose_THO2()
 {
-    while (true) 
+    while (true)
     {
         std::unique_lock<std::recursive_mutex> lck(mtx);
         while (orderOfGeneration != 5 || th_atoms.size() < 1 || o_atoms.size() < 2)
@@ -209,7 +209,7 @@ void ChemicalReaction::Compose_THO2()
     }
 }
 
-void ChemicalReaction::DisplayComposedMolecule(TYPE producedType)
+void ChemicalReaction_Mutex::DisplayComposedMolecule(TYPE producedType)
 {
     std::unique_lock<std::recursive_mutex> lck(mtx);
 
@@ -217,7 +217,7 @@ void ChemicalReaction::DisplayComposedMolecule(TYPE producedType)
     {
         std::cout << ax.atomType << " with ID: " << ax.atomID << " is created." << std::endl;
     }
-    else if(producedType == TYPE::MOLECULE)
+    else if (producedType == TYPE::MOLECULE)
     {
         std::cout << "\nComposed Molecule: " << composedMolecule << "\n" << std::endl;
     }
