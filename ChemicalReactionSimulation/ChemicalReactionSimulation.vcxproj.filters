@@ -18,12 +18,18 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ChemicalReaction.cpp">
+    <ClCompile Include="ChemicalReaction_Mutex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ChemicalReaction_Semaphore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ChemicalReaction.h">
+    <ClInclude Include="ChemicalReaction_Mutex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ChemicalReaction_Semaphore.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

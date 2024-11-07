@@ -1,5 +1,5 @@
-﻿#ifndef INCLUDE_ATOM_H_
-#define INCLUDE_ATOM_H_
+#ifndef INCLUDE_ATOM_SS_H_
+#define INCLUDE_ATOM_SS_H_
 
 #include <iostream>
 #include <cstdlib>
@@ -14,7 +14,7 @@
 
 enum class TYPE
 {
-	ATOM, 
+	ATOM,
 	MOLECULE
 };
 
@@ -23,14 +23,14 @@ struct atom
 	int atomID;
 	std::string atomType; // C, N, S, or 
 };
-	
+
 inline std::string atomName[5] = { "C", "N", "S", "Th", "O" };
 
-class ChemicalReaction
+class ChemicalReaction_Mutex
 {
 public:
-	ChemicalReaction(int C, int N, int S, int Th, int O, int generationRate);
-	~ChemicalReaction();
+	ChemicalReaction_Mutex(int C, int N, int S, int Th, int O, int generationRate);
+	~ChemicalReaction_Mutex();
 	void Start();
 
 private:
